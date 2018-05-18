@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+#PBS parameters...
+
+#Working directories, input and output files
+data=				#raw fastq directory
+outdir=				#ouptut directory
+logdir=				#log directory
+tag_trimming="trimming_cutadapt"
+tag_raw_qc="fastqc_raw"
+tag_trimmed_qc="fastqc_trimmed"
+tmp=				#temporary directory
+
+#Trimming parameters
+#TruSeq Adapters given by Sequencing platform
+r1="AGATCGGAAGAGCACACGTCTGAACTCCAGTCA"
+r2="AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
+
+#Illumina universal TruSeq adapters
+u1="AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT"
+u2="AGATCGGAAGAGC"
+
+q=28				#quality threshold
+m=25				#minimum length (bp)
+
+
+#CONDA environments paths if needed
+fastqc_env=			#path to fastqc version 0.11.5 conda environment
+cutadapt_env=			#path to cutadapt version 1.13 conda environment
+
+#executables paths
+fastqc=				#path to fastqc version 0.11.5
+cutadapt=			#path to cutadapt version 1.13
+
+#Loading fastqc environment
+$fastqc_env
+
+#Defining an unique log file name
+log=${logdir}/${tag}_${PBS_JOBID}.log
+
+#Creating project output directories
+mkdir -p ${outdir}/${tag_trimming}
+mkdir -p ${outdir}/${tag_raw_qc}
+mkdir -p -p ${outdir}/${tag_trimmed_qc}
+
+#Running fastQC on raw reads
+cd ${data}
+for dir in $(ls);
+do
+	cd $dir ;
+	time $fastqc -o ${outdir}/${tag_raw_qc} *.fastq.gz >> $log ;
+	cd .. ;
+done
+
+#Loading cutadapt environment
+$cutadapt_env
+
+#Running Cutadapt on raw fastq files
+cd ${data}
+for dir in $(ls) ; 
+do
+        cd $dir ;
+	time $cutadapt \
+		-b $r1 \
+		-A $r2 \
+		-q $q,$q \
+		-m $m \
+		--too-short-output ${outdir}/${tag_trimming}/${dir}_R1_tooShortAfterTrimming.fastq.gz \
+		--too-short-paired-output ${outdir}/${tag_trimming}/${dir}_R2_tooShortAfterTrimming.fastq.gz \
+		-o  ${outdir}/${tag_trimming}/${dir}_R1_trimmed.fastq.gz -p  ${outdir}/${tag_trimming}/${dir}_R2_trimmed.fastq.gz \
+		${dir}_R1.fastq.gz ${dir}_R2.fastq.gz >> $log ;
+	cd .. ;
+done
+
+#Loading fastqc environment
+$fastqc_env
+
+#Running fastQC on trimmed reads
+cd ${outdir}/${tag_trimming}
+time $fastqc -o ${outdir}/${tag_trimmed_qc} ${outdir}/${tag_trimming}/*trimmed.fastq.gz >> $log
+
+
+
+

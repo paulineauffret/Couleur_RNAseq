@@ -1,0 +1,14 @@
+1/ STEP 1 : QC AND TRIIMING RAW READ
+qsub 1_trimming_PE_cutadapt.qsub
+
+2/ STEP 2 : MAPPING TRIMMED READS
+bash 02_mapping_PE_bwa.sh
+
+3/ STEP 3 : FILTERING BAM FILES
+bash 03_filtering_bamfiles.sh
+
+4/ STEP 4 : COUNTING TAG
+bash 04_counting_tag_htseq.sh
+
+[/ STEP 5 : RUNNING DESeq2
+05_running_de_analysis_deseq2.r
