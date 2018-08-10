@@ -1,6 +1,6 @@
 #!/bin/bash
 
-data=		#path to directory containing bam files (resulting from step 04)
+data=		#path to directory containing bam files (resulting from step 03)
 script=		#path to 05_2_markdup.qsub file 
 
 for file in $(ls ${data}/*F4_F256_q5_f2_sorted.bam)

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #PBS parameters...
 
-data=		#path to directory containing bam files (resulting from step 04)
+data=		#path to directory containing bam files (resulting from step 03)
 outdir=		#output directory
 ref=		#path to reference transcriptome
 pic=		#path to picard tools version 1.119
