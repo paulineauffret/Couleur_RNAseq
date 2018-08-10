@@ -1,5 +1,5 @@
 1/ STEP 1 : QC AND TRIIMING RAW READ
-qsub 1_trimming_PE_cutadapt.qsub
+qsub 01_trimming_PE_cutadapt.qsub
 
 2/ STEP 2 : MAPPING TRIMMED READS
 bash 02_mapping_PE_bwa.sh
@@ -10,13 +10,16 @@ bash 03_filtering_bamfiles.sh
 4/ STEP 4 : COUNTING TAG
 bash 04_counting_tag_htseq.sh
 
-5/ STEP 5 : SNP CALLING
-qsub 05_freebayes.qsub
+5/ STEP 5 : MARKING DUPLICATES  
+bash 05_1_markdup.sh
 
-6/ STEP 6 : VCF FILTERING
-qsub 06_vcftools.qsub
+6/ STEP 6 : SNP CALLING
+qsub 06_freebayes.qsub
 
-7/ STEP 7 : DE ANALYSIS
-07_running_de_analysis_deseq2_functions.r
-07_running_de_analysis_deseq2.r
-07_sartools.r
+7/ STEP 7 : VCF FILTERING
+qsub 07_vcftools.qsub
+
+8/ STEP 8 : DE ANALYSIS
+08_running_de_analysis_deseq2_functions.r
+08_running_de_analysis_deseq2.r
+08_sartools.r
