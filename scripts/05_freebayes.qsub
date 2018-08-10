@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+#PBS parameters...
+
+FB_ENV=		#path to conda freebayes env if needed
+FB=		#path to freebayes version v1.1.0-3-g961e5f3
+REF=		#path to ref transcriptome
+BAM=		#path to txt file containing list of filtered bam files (resulting from step 03)
+NB_CPU=12
+nAlleles=4
+minMapQ=20
+minCOV=5
+VCF=		#path to output vcf file
+LOG=		#path to log file
+
+${FB_ENV}
+
+freebayes -f ${REF} \
+	--use-best-n-alleles $nAlleles \
+        --min-mapping-quality $minMapQ \
+        --min-coverage $minCOV \
+	--bam-list ${BAM} \
+	--vcf ${VCF} >& $LOG
+
+
+
+
+

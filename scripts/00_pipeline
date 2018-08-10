@@ -10,5 +10,13 @@ bash 03_filtering_bamfiles.sh
 4/ STEP 4 : COUNTING TAG
 bash 04_counting_tag_htseq.sh
 
-[/ STEP 5 : RUNNING DESeq2
-05_running_de_analysis_deseq2.r
+5/ STEP 5 : SNP CALLING
+qsub 05_freebayes.qsub
+
+6/ STEP 6 : VCF FILTERING
+qsub 06_vcftools.qsub
+
+7/ STEP 7 : DE ANALYSIS
+07_running_de_analysis_deseq2_functions.r
+07_running_de_analysis_deseq2.r
+07_sartools.r
